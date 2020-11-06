@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+
 using TodoApi.Models;
 
 namespace TodoApi
@@ -20,8 +22,17 @@ namespace TodoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TodoContext>(opt =>
-                opt.UseInMemoryDatabase("TodoList"));
+            /**
+                The following block of code was for in-memory DB
+            */
+            // services.AddDbContext<TodoContext>(opt =>
+            //     opt.UseInMemoryDatabase("TodoList"));
+
+            //--> The following code block added for postgres sql db
+
+            services.AddDbContext<TodoContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+ 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
