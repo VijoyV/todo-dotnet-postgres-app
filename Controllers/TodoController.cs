@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoApi.Models;
-
+using Serilog;
 namespace TodoApi.Controllers
 {
     [Route("api/todo")]
@@ -38,6 +38,8 @@ namespace TodoApi.Controllers
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
             var todoItem = await _context.TodoItems.FindAsync(id);
+            
+            Log.Information("GET " + todoItem);
 
             if (todoItem == null)
             {
@@ -54,6 +56,8 @@ namespace TodoApi.Controllers
             _context.TodoItems.Add(item);
             await _context.SaveChangesAsync();
 
+            Log.Information("POST " + item);
+
             return CreatedAtAction(nameof(GetTodoItem), new { id = item.Id }, item);
         }
 
@@ -68,6 +72,8 @@ namespace TodoApi.Controllers
 
             _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            Log.Information("PUT " + item);
 
             return NoContent();
         }
@@ -85,6 +91,8 @@ namespace TodoApi.Controllers
 
             _context.TodoItems.Remove(todoItem);
             await _context.SaveChangesAsync();
+
+            Log.Information("DELETE " + id);
 
             return NoContent();
         }
